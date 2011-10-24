@@ -36,7 +36,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = \
 	autogen.sh \
-	ibus-pinyin.spec.in \
+	libpyzy.spec.in \
 	$(NULL)
 
 noinst_DIST = \
@@ -114,7 +114,7 @@ dpkg: dist debian/changelog
 
 upload: dist
 	./tools/googlecode_upload.py \
-		-s "ibus-pinyin（拼音）source code" \
+		-s "libpyzy source code" \
 		-p ibus \
 		-l "Type-Source,OpSys-Linux,Chinese,Unstable" \
 		$(distdir).tar.gz

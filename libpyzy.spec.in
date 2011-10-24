@@ -11,7 +11,6 @@ Source1:    pinyin-database-1.2.99.tar.bz2
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  glib2
-BuildRequires:  gettext-devel
 BuildRequires:  libtool
 BuildRequires:  pkgconfig
 BuildRequires:  sqlite-devel
@@ -21,30 +20,30 @@ BuildRequires:  gtest-devel
 
 # Requires(post): sqlite
 
-Requires:   ibus-pinyin-db = %{version}-%{release}
+Requires:   libpyzy-db = %{version}-%{release}
 
 %description
-The Chinese Pinyin and Bopomof input methods for IBus platform.
+The Chinese Pinyin and Bopomofo conversion library.
 
 %package    db-open-phrase
-Summary:    The open phrase database for ibus Pinyin
+Summary:    The open phrase database for libpyzy
 Group:      System Environment/Libraries
 BuildArch:  noarch
-Provides:   ibus-pinyin-db
+Provides:   libpyzy-db
 Requires(post): sqlite
 
 %description db-open-phrase
-The phrase database for ibus Pinyin and Bopomofo from open-phrase project.
+The phrase database for libpyzy from open-phrase project.
 
 %package    db-android
-Summary:    The android phrase database for ibus Pinyin and Bopomofo
+Summary:    The android phrase database for libpyzy
 Group:      System Environment/Libraries
 BuildArch:  noarch
-Provides:   ibus-pinyin-db
+Provides:   libpyzy-db
 Requires(post): sqlite
 
 %description db-android
-The phrase database for ibus Pinyin and Bopomofo from android project.
+The phrase database for libpyzy from android project.
 
 %prep
 %setup -q
@@ -66,27 +65,25 @@ make DESTDIR=${RPM_BUILD_ROOT} install
 rm -rf $RPM_BUILD_ROOT
 
 %post
-# cd %{_datadir}/ibus-pinyin/db
+# cd %{_datadir}/libpyzy/db
 # sqlite3 android.db ".read create_index.sql"
 
 %post db-open-phrase
-# cd %{_datadir}/ibus-pinyin/db
+# cd %{_datadir}/libpyzy/db
 # sqlite3 open-phrase.db ".read create_index.sql"
 
 %post db-android
-# cd %{_datadir}/ibus-pinyin/db
+# cd %{_datadir}/libpyzy/db
 # sqlite3 android.db ".read create_index.sql"
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING README
-%{_libexecdir}/ibus-engine-pinyin
 %{_datadir}/@PACKAGE@/phrases.txt
 %{_datadir}/@PACKAGE@/icons
 %{_datadir}/@PACKAGE@/db/create_index.sql
 %dir %{_datadir}/@PACKAGE@
 %dir %{_datadir}/@PACKAGE@/db
-%{_datadir}/ibus/component/*
 
 %files db-open-phrase
 %{_datadir}/@PACKAGE@/db/open-phrase.db

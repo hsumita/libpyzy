@@ -30,7 +30,7 @@ m4_define(ibus_maybe_datestamp,
 m4_define([ibus_version],
     ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
 
-AC_INIT([ibus-pinyin], [ibus_version], [http://code.google.com/p/ibus/issues/entry],[ibus-pinyin])
+AC_INIT([libpyzy], [ibus_version], [http://code.google.com/p/ibus/issues/entry],[libpyzy])
 AM_INIT_AUTOMAKE([1.10])
 AC_GNU_SOURCE
 
@@ -122,13 +122,6 @@ if test x"$enable_opencc" = x"yes"; then
     ])
 fi
 
-# define GETTEXT_* variables
-GETTEXT_PACKAGE=ibus-pinyin
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
-
-AM_GLIB_GNU_GETTEXT
-
 # --enable-db-android
 AC_ARG_ENABLE(db-android,
     AS_HELP_STRING([--disable-db-android],
@@ -150,9 +143,8 @@ AM_CONDITIONAL(IBUS_BUILD_DB_OPEN_PHRASE, [test x"$enable_db_open_phrase" = x"ye
 # OUTPUT files
 AC_CONFIG_FILES([
 Makefile
-ibus-pinyin.spec
+libpyzy.spec
 src/Makefile
-src/pinyin.xml.in
 data/Makefile
 data/db/Makefile
 data/db/android/Makefile

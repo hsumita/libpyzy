@@ -40,7 +40,6 @@ libpyzyinclude_HEADERS = \
 	$(NULL)
 lib_LTLIBRARIES = libpyzy.la
 
-#libexec_PROGRAMS = ibus-engine-pinyin
 libpyzy_built_c_sources = \
 	$(NULL)
 libpyzy_built_h_sources = \
@@ -101,9 +100,7 @@ libpyzy_la_CXXFLAGS = \
 	@GLIB2_CFLAGS@ \
 	@SQLITE_CFLAGS@ \
 	@OPENCC_CFLAGS@ \
-	-DGETTEXT_PACKAGE=\"@GETTEXT_PACKAGE@\" \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
-	-DLIBEXECDIR=\"$(libexecdir)\" \
 	$(NULL)
 
 if HAVE_BOOST
@@ -137,18 +134,11 @@ pkgdata_DATA = \
 	phrases.txt \
 	$(NULL)
 
-component_DATA = \
-	pinyin.xml \
-	$(NULL)
-componentdir = @datadir@/ibus/component
-
 EXTRA_DIST = \
-	pinyin.xml.in \
 	phrases.txt \
 	$(NULL)
 
 CLEANFILES = \
-	pinyin.xml \
 	ZhConversion.* \
 	$(NULL)
 
@@ -172,15 +162,6 @@ update-simptrad-table:
 	$(MAKE) ZhConversion.php
 	$(MAKE) ZhConversion.py
 	$(MAKE) PyZySimpTradConverterTable.h
-
-pinyin.xml: pinyin.xml.in
-	$(AM_V_GEN) \
-	( \
-		libexecdir=${libexecdir}; \
-		pkgdatadir=${pkgdatadir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
 
 ZhConversion.php:
 	$(AM_V_GEN) \

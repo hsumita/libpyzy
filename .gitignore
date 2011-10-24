@@ -17,8 +17,8 @@ config.sub
 confinc
 confmf
 depcomp
-ibus-pinyin-*.tar.gz
-ibus-pinyin.spec
+libpyzy-*.tar.gz
+libpyzy.spec
 install-sh
 libtool
 ltmain.sh
