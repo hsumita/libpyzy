@@ -77,6 +77,8 @@ protected:
     gboolean resetCandidateInPage (guint i);
     gboolean focusCandidate (guint i);
     gboolean focusCandidateInPage (guint i);
+    gboolean focusCandidatePrevious ();
+    gboolean focusCandidateNext ();
 
     virtual void selectPage (guint i);
 
@@ -132,7 +134,7 @@ protected:
     std::string                 m_selected_special_phrase;
     String                      m_text;
     Preedit                     m_preedit_text;
-    PhoneticContext::Observer     *m_observer;
+    PhoneticContext::Observer  *m_observer;
     std::vector<Candidate>      m_candidates;
     std::string                 m_auxiliary_text;
 };

@@ -107,6 +107,10 @@ PhoneticContext::processKeyEvent (unsigned short key)
             return selectCandidateInPage (key_num);
         case VKEY_CANDIDATE_FOCUS:
             return focusCandidateInPage (key_num);
+        case VKEY_CANDIDATE_FOCUS_PREVIOUS:
+            return focusCandidatePrevious ();
+        case VKEY_CANDIDATE_FOCUS_NEXT:
+            return focusCandidateNext ();
         case VKEY_CANDIDATE_RESET:
             return resetCandidateInPage (key_num);
 
@@ -196,7 +200,7 @@ PhoneticContext::updateLookupTable (void)
         m_candidates.push_back (candidate);
     }
 
-    m_observer->lookupTableChanged ();
+    m_observer->lookupTableChanged (this);
 }
 
 void
@@ -218,6 +222,24 @@ gboolean
 PhoneticContext::focusCandidateInPage (guint i)
 {
     return focusCandidate (page () * m_config.pageSize () + i);
+}
+
+gboolean
+PhoneticContext::focusCandidatePrevious ()
+{
+    if (G_UNLIKELY (m_focused_candidate == 0)) {
+        return FALSE;
+    }
+    return focusCandidate (m_focused_candidate - 1);
+}
+
+gboolean
+PhoneticContext::focusCandidateNext ()
+{
+    if (G_UNLIKELY (m_focused_candidate >= m_candidates.size ())) {
+        return FALSE;
+    }
+    return focusCandidate (m_focused_candidate + 1);
 }
 
 gboolean

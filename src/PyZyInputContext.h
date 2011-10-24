@@ -56,7 +56,9 @@ enum VKeyCode {
 
     VKEY_CANDIDATE_SELECT = (30 << 8),
     VKEY_CANDIDATE_FOCUS = (31 << 8),
-    VKEY_CANDIDATE_RESET = (32 << 8),
+    VKEY_CANDIDATE_FOCUS_PREVIOUS = (32 << 8),
+    VKEY_CANDIDATE_FOCUS_NEXT = (33 << 8),
+    VKEY_CANDIDATE_RESET = (34 << 8),
 
     VKEY_PAGE_PREVIOUS = (40 << 8),
     VKEY_PAGE_NEXT = (41 << 8),
@@ -78,10 +80,11 @@ public:
     class Observer {
     public:
         virtual ~Observer () { }
-        virtual void commitText (const std::string &commit_text) = 0;
-        virtual void preeditTextChanged () = 0;
-        virtual void auxiliaryTextChanged () = 0;
-        virtual void lookupTableChanged () = 0;
+        virtual void commitText (const InputContext * context,
+                                 const std::string &commit_text) = 0;
+        virtual void preeditTextChanged (const InputContext * context) = 0;
+        virtual void auxiliaryTextChanged (const InputContext * context) = 0;
+        virtual void lookupTableChanged (const InputContext * context) = 0;
     };
 
     enum InputType {

@@ -37,7 +37,6 @@
 using namespace std;
 using namespace PyZy;
 
-
 int main(int argc, char **argv) {
     testing::InitGoogleTest (&argc, argv);
     return RUN_ALL_TESTS ();
@@ -65,13 +64,13 @@ protected:
 
 class CounterObserver : public PyZy::PhoneticContext::Observer {
 public:
-    void commitText (const std::string &commit_text) {
+    void commitText (const InputContext *context, const std::string &commit_text) {
         m_commited_text = commit_text;
         ++m_commit_text;
     }
-    void preeditTextChanged ()     { ++m_preedit_text; }
-    void auxiliaryTextChanged ()   { ++m_auxiliary_text; }
-    void lookupTableChanged ()     { ++m_lookup_table; }
+    void preeditTextChanged (const InputContext *context)     { ++m_preedit_text; }
+    void auxiliaryTextChanged (const InputContext *context)   { ++m_auxiliary_text; }
+    void lookupTableChanged (const InputContext *context)     { ++m_lookup_table; }
 
     string commitedText ()         { return m_commited_text; }
     guint commitTextCount ()       { return m_commit_text; }
@@ -1326,6 +1325,51 @@ TEST_F(PyZyTest, PagingTest) {
 
         observer.clear ();
         context.processKeyEvent (VKEY_PAGE_BEGIN);
+        EXPECT_EQ (5, context.cursor ());
+        EXPECT_EQ ("nihao", context.inputText ());
+        EXPECT_EQ ("", context.selectedText ());
+        EXPECT_EQ ("你好", context.conversionText ());
+        EXPECT_EQ ("", context.restText ());
+        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
+        EXPECT_LT (0, context.candidates ().size ());
+        EXPECT_EQ ("", observer.commitedText ());
+        EXPECT_EQ (1, observer.preeditTextCount ());
+        EXPECT_EQ (1, observer.lookupTableCount ());
+        EXPECT_EQ (0, observer.commitTextCount ());
+        EXPECT_EQ (0, context.focusedCandidate ());
+
+        observer.clear ();
+        context.processKeyEvent (VKEY_CANDIDATE_FOCUS_PREVIOUS);
+        EXPECT_EQ (5, context.cursor ());
+        EXPECT_EQ ("nihao", context.inputText ());
+        EXPECT_EQ ("", context.selectedText ());
+        EXPECT_EQ ("你好", context.conversionText ());
+        EXPECT_EQ ("", context.restText ());
+        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
+        EXPECT_LT (0, context.candidates ().size ());
+        EXPECT_EQ ("", observer.commitedText ());
+        EXPECT_EQ (0, observer.preeditTextCount ());
+        EXPECT_EQ (0, observer.lookupTableCount ());
+        EXPECT_EQ (0, observer.commitTextCount ());
+        EXPECT_EQ (0, context.focusedCandidate ());
+
+        observer.clear ();
+        context.processKeyEvent (VKEY_CANDIDATE_FOCUS_NEXT);
+        EXPECT_EQ (5, context.cursor ());
+        EXPECT_EQ ("nihao", context.inputText ());
+        EXPECT_EQ ("", context.selectedText ());
+        EXPECT_EQ ("你", context.conversionText ());
+        EXPECT_EQ ("hao", context.restText ());
+        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
+        EXPECT_LT (0, context.candidates ().size ());
+        EXPECT_EQ ("", observer.commitedText ());
+        EXPECT_EQ (1, observer.preeditTextCount ());
+        EXPECT_EQ (1, observer.lookupTableCount ());
+        EXPECT_EQ (0, observer.commitTextCount ());
+        EXPECT_EQ (1, context.focusedCandidate ());
+
+        observer.clear ();
+        context.processKeyEvent (VKEY_CANDIDATE_FOCUS_PREVIOUS);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("nihao", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
