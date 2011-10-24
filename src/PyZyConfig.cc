@@ -27,7 +27,7 @@
 
 namespace PyZy {
 
-const guint PINYIN_DEFAULT_OPTION =
+const unsigned int PINYIN_DEFAULT_OPTION =
         PINYIN_INCOMPLETE_PINYIN |
         PINYIN_CORRECT_ALL |
         PINYIN_FUZZY_C_CH |
@@ -78,19 +78,77 @@ Config::~Config ()
 }
 
 /* Accessors */
-unsigned int Config::option (void) const                     { return m_impl->m_option; }
-unsigned int Config::doublePinyinSchema (void) const         { return m_impl->m_double_pinyin_schema; }
-bool Config::specialPhrases (void) const                     { return m_impl->m_special_phrases; }
-bool Config::modeSimp (void) const                           { return m_impl->m_mode_simp; }
-unsigned int Config::bopomofoKeyboardMapping (void) const    { return m_impl->m_bopomofo_keyboard_mapping; }
-unsigned int Config::pageSize (void) const                   { return m_impl->m_page_size; }
+unsigned int
+Config::option (void) const
+{
+    return m_impl->m_option;
+}
 
-void Config::setOption (unsigned int value)                  { m_impl->m_option = value; }
-void Config::setDoublePinyinSchema (unsigned int value)      { m_impl->m_double_pinyin_schema = value; }
-void Config::setSpecialPhrases (bool value)                  { m_impl->m_special_phrases = value; }
-void Config::setModeSimp (bool value)                        { m_impl->m_mode_simp = value; }
-void Config::setBopomofoKeyboardMapping (unsigned int value) { m_impl->m_bopomofo_keyboard_mapping = value; }
-void Config::setPageSize (unsigned int value)                { m_impl->m_page_size = value; }
+unsigned int
+Config::doublePinyinSchema (void) const
+{
+    return m_impl->m_double_pinyin_schema;
+}
+
+bool
+Config::specialPhrases (void) const
+{
+    return m_impl->m_special_phrases;
+}
+
+bool
+Config::modeSimp (void) const
+{
+    return m_impl->m_mode_simp;
+}
+
+unsigned int
+Config::bopomofoKeyboardMapping (void) const
+{
+    return m_impl->m_bopomofo_keyboard_mapping;
+}
+
+unsigned int
+Config::pageSize (void) const
+{
+    return m_impl->m_page_size;
+}
+
+void
+Config::setOption (unsigned int value)
+{
+    m_impl->m_option = value;
+}
+
+void
+Config::setDoublePinyinSchema (unsigned int value)
+{
+    m_impl->m_double_pinyin_schema = value;
+}
+
+void
+Config::setSpecialPhrases (bool value)
+{
+    m_impl->m_special_phrases = value;
+}
+
+void
+Config::setModeSimp (bool value)
+{
+    m_impl->m_mode_simp = value;
+}
+
+void
+Config::setBopomofoKeyboardMapping (unsigned int value)
+{
+    m_impl->m_bopomofo_keyboard_mapping = value;
+}
+
+void
+Config::setPageSize (unsigned int value)
+{
+    m_impl->m_page_size = value;
+}
 
 void
 Config::readDefaultValues ()
@@ -103,7 +161,6 @@ Config::readDefaultValues ()
     m_impl->m_special_phrases = TRUE;
     m_impl->m_bopomofo_keyboard_mapping = 0;
 }
-
 
 /* Pinyin Config */
 struct PinyinConfig::PinyinConfigImpl {

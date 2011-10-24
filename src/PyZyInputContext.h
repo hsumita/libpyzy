@@ -40,8 +40,8 @@ struct Candidate {
     CandidateType type;
 };
 
-// lower 8bits of vkey_code should be zero.
-enum vkey_code {
+// lower 8bits of VKeyCode should be zero.
+enum VKeyCode {
     VKEY_FIRST = 1 << 8,
 
     VKEY_COMMIT = (10 << 8),
