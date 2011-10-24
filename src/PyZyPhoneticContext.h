@@ -69,7 +69,11 @@ public:
 
 protected:
 
+    virtual void commitText (const std::string & commit_text);
     virtual void updateLookupTable (void);
+    virtual void updateAuxiliaryText (void);
+    virtual void updatePreeditText (void);
+
     virtual gboolean updateSpecialPhrases (void);
     gboolean selectCandidate (guint i);
     gboolean selectCandidateInPage (guint i);
@@ -107,6 +111,7 @@ protected:
         return (const gchar *)m_text + m_cursor;
     }
 
+
     /* pure virtual functions */
     virtual gboolean insert (gint ch) = 0;
     virtual gboolean removeCharBefore (void) = 0;
@@ -119,8 +124,6 @@ protected:
     virtual gboolean moveCursorRightByWord (void) = 0;
     virtual gboolean moveCursorToBegin (void) = 0;
     virtual gboolean moveCursorToEnd (void) = 0;
-    virtual void updateAuxiliaryText (void) = 0;
-    virtual void updatePreeditText (void) = 0;
 
     /* variables */
     Config                     &m_config;
@@ -134,9 +137,11 @@ protected:
     std::string                 m_selected_special_phrase;
     String                      m_text;
     Preedit                     m_preedit_text;
-    PhoneticContext::Observer  *m_observer;
     std::vector<Candidate>      m_candidates;
     std::string                 m_auxiliary_text;
+
+private:
+    PhoneticContext::Observer  *m_observer;
 };
 
 }; // namespace PyZy

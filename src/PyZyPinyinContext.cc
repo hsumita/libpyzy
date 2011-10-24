@@ -62,7 +62,7 @@ PinyinContext::commit ()
     m_phrase_editor.commit ();
     reset ();
     update ();
-    m_observer->commitText (this, m_buffer);
+    PhoneticContext::commitText (m_buffer);
 }
 
 void
@@ -71,7 +71,7 @@ PinyinContext::updatePreeditText ()
     /* preedit text = selected phrases + highlight candidate + rest text */
     if (G_UNLIKELY (m_phrase_editor.empty () && m_text.empty ())) {
         m_preedit_text.clear ();
-        m_observer->preeditTextChanged (this);
+        PhoneticContext::updatePreeditText ();
         return;
     }
 
@@ -148,7 +148,7 @@ PinyinContext::updatePreeditText ()
         m_preedit_text.rest_text = m_buffer.substr (edit_end_byte);
     }
 
-    m_observer->preeditTextChanged (this);
+    PhoneticContext::updatePreeditText ();
 }
 
 void
@@ -158,7 +158,7 @@ PinyinContext::updateAuxiliaryText (void)
     if (G_UNLIKELY (m_text.empty () ||
         m_candidates.size () == 0)) {
         m_auxiliary_text = "";
-        m_observer->auxiliaryTextChanged (this);
+        PhoneticContext::updateAuxiliaryText ();
         return;
     }
 
@@ -201,7 +201,7 @@ PinyinContext::updateAuxiliaryText (void)
     }
   
     m_auxiliary_text = m_buffer;
-    m_observer->auxiliaryTextChanged (this);
+    PhoneticContext::updateAuxiliaryText ();
 }
 
 };  // namespace PyZy

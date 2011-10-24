@@ -171,6 +171,12 @@ PhoneticContext::updateSpecialPhrases (void)
 }
 
 void
+PhoneticContext::commitText (const std::string & commit_text)
+{
+    m_observer->commitText (this, commit_text);
+}
+
+void
 PhoneticContext::updateLookupTable (void)
 {
     m_candidates.clear ();
@@ -201,6 +207,18 @@ PhoneticContext::updateLookupTable (void)
     }
 
     m_observer->lookupTableChanged (this);
+}
+
+void
+PhoneticContext::updateAuxiliaryText (void)
+{
+    m_observer->auxiliaryTextChanged (this);
+}
+
+void
+PhoneticContext::updatePreeditText (void)
+{
+    m_observer->preeditTextChanged (this);
 }
 
 void
