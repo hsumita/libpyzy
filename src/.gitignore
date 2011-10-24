@@ -1,0 +1,6 @@
+*.o
+.deps
+.libs
+pinyin.xml
+pinyin.xml.in
+ibus-engine-pinyin
