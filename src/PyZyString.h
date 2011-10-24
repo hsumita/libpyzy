@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __STRING_H_
-#define __STRING_H_
+#ifndef __PYZY_STRING_H_
+#define __PYZY_STRING_H_
 
 #include <glib.h>
 #include <stdarg.h>
@@ -181,4 +181,4 @@ public:
 
 };  // namespace PyZy
 
-#endif  // __STRING_H_
+#endif  // __PYZY_STRING_H_

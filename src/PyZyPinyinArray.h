@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __PINYIN_ARRAY_H_
-#define __PINYIN_ARRAY_H_
+#ifndef __PYZY_PINYIN_ARRAY_H_
+#define __PYZY_PINYIN_ARRAY_H_
 
 #include <vector>
 #include "PyZyTypes.h"
@@ -71,4 +71,4 @@ public:
 
 };  // namespace PyZy
 
-#endif  // __PINYIN_ARRAY_H_
+#endif  // __PYZY_PINYIN_ARRAY_H_

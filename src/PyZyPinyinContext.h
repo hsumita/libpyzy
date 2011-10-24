@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __PINYIN_CONTEXT_H_
-#define __PINYIN_CONTEXT_H_
+#ifndef __PYZY_PINYIN_CONTEXT_H_
+#define __PYZY_PINYIN_CONTEXT_H_
 
 #include "PyZyPhoneticContext.h"
 
@@ -40,4 +40,4 @@ protected:
 
 }; // namespace PyZy
 
-#endif  // __PINYIN_CONTEXT_H_
+#endif  // __PYZY_PINYIN_CONTEXT_H_

@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __SIMP_TRAD_CONVERTER_H_
-#define __SIMP_TRAD_CONVERTER_H_
+#ifndef __PYZY_SIMP_TRAD_CONVERTER_H_
+#define __PYZY_SIMP_TRAD_CONVERTER_H_
 
 #include <glib.h>
 
@@ -35,4 +35,4 @@ public:
 
 };  // namespace PyZy
 
-#endif  // __SIMP_TRAD_CONVERTER_H_
+#endif  // __PYZY_SIMP_TRAD_CONVERTER_H_

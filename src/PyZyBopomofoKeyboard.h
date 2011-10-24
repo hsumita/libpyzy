@@ -20,8 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __BOPOMOFO_KEYBOARD_H_
-#define __BOPOMOFO_KEYBOARD_H_
+#ifndef __PYZY_BOPOMOFO_KEYBOARD_H_
+#define __PYZY_BOPOMOFO_KEYBOARD_H_
 
 #include "PyZyBopomofo.h"
 
@@ -201,4 +201,4 @@ bopomofo_keyboard[][41][2] = {
     },
 };
 
-#endif // __BOPOMOFO_KEYBOARD_H_
+#endif // __PYZY_BOPOMOFO_KEYBOARD_H_

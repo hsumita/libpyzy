@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __DOUBLE_PINYIN_TABLE_H_
-#define __DOUBLE_PINYIN_TABLE_H_
+#ifndef __PYZY_DOUBLE_PINYIN_TABLE_H_
+#define __PYZY_DOUBLE_PINYIN_TABLE_H_
 
 #define DOUBLE_PINYIN_MSPY  (0)
 #define DOUBLE_PINYIN_ZRM   (1)
@@ -396,4 +396,4 @@ static const struct {
 };
 #endif  // DEFINE_DOUBLE_PINYIN_TABLE
 
-#endif  // __DOUBLE_PINYIN_TABLE_H_
+#endif  // __PYZY_DOUBLE_PINYIN_TABLE_H_

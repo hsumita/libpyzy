@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __INPUT_CONTEXT_H_
-#define __INPUT_CONTEXT_H_
+#ifndef __PYZY_INPUT_CONTEXT_H_
+#define __PYZY_INPUT_CONTEXT_H_
 
 #include <string>
 #include <vector>
@@ -119,4 +119,4 @@ public:
 
 }; // namespace PyZy
 
-#endif  // __INPUT_CONTEXT_H_
+#endif  // __PYZY_INPUT_CONTEXT_H_

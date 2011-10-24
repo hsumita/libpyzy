@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __CONFIG_H_
-#define __CONFIG_H_
+#ifndef __PYZY_CONFIG_H_
+#define __PYZY_CONFIG_H_
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -94,4 +94,4 @@ private:
 
 };  // namespace PyZy
 
-#endif  // __CONFIG_H_
+#endif  // __PYZY_CONFIG_H_

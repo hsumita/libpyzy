@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __PHRASE_ARRAY_H_
-#define __PHRASE_ARRAY_H_
+#ifndef __PYZY_PHRASE_ARRAY_H_
+#define __PYZY_PHRASE_ARRAY_H_
 
 #include <vector>
 #include "PyZyPhrase.h"
@@ -31,4 +31,4 @@ typedef std::vector<Phrase> PhraseArray;
 
 };  // namespace PyZy
 
-#endif  // __PHRASE_ARRAY_H_
+#endif  // __PYZY_PHRASE_ARRAY_H_

@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __PINYIN_PARSER_H_
-#define __PINYIN_PARSER_H_
+#ifndef __PYZY_PINYIN_PARSER_H_
+#define __PYZY_PINYIN_PARSER_H_
 
 #include <glib.h>
 #include "PyZyString.h"
@@ -47,4 +47,4 @@ public:
 
 };  // namespace PyZy
 
-#endif  // __PINYIN_PARSER_H_
+#endif  // __PYZY_PINYIN_PARSER_H_

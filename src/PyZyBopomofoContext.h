@@ -20,8 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __BOPOMOFO_CONTEXT_H_
-#define __BOPOMOFO_CONTEXT_H_
+#ifndef __PYZY_BOPOMOFO_CONTEXT_H_
+#define __PYZY_BOPOMOFO_CONTEXT_H_
 
 #include "PyZyPhoneticContext.h"
 
@@ -67,4 +67,4 @@ protected:
 
 };
 
-#endif  // __BOPOMOFO_CONTEXT_H_
+#endif  // __PYZY_BOPOMOFO_CONTEXT_H_

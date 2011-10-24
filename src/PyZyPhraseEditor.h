@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __PHRASE_EDITOR_H_
-#define __PHRASE_EDITOR_H_
+#ifndef __PYZY_PHRASE_EDITOR_H_
+#define __PYZY_PHRASE_EDITOR_H_
 
 #include "PyZyUtil.h"
 #include "PyZyString.h"
@@ -130,4 +130,4 @@ private:
 
 };  // namespace PyZy
 
-#endif  // __PHRASE_EDITOR_H_
+#endif  // __PYZY_PHRASE_EDITOR_H_

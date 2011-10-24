@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __DOUBLE_PINYIN_CONTEXT_H_
-#define __DOUBLE_PINYIN_CONTEXT_H_
+#ifndef __PYZY_DOUBLE_PINYIN_CONTEXT_H_
+#define __PYZY_DOUBLE_PINYIN_CONTEXT_H_
 
 #include "PyZyPinyinContext.h"
 
@@ -62,4 +62,4 @@ private:
 
 };  // namespace PyZy
 
-#endif  // __DOUBLE_PINYIN_CONTEXT_H_
+#endif  // __PYZY_DOUBLE_PINYIN_CONTEXT_H_

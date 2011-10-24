@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __DYNAMIC_SPECIAL_PHRASE_H_
-#define __DYNAMIC_SPECIAL_PHRASE_H_
+#ifndef __PYZY_DYNAMIC_SPECIAL_PHRASE_H_
+#define __PYZY_DYNAMIC_SPECIAL_PHRASE_H_
 
 #include <ctime>
 #include <string>
@@ -54,5 +54,5 @@ private:
 
 };  // namespace PyZy
 
-#endif  // __DYNAMIC_SPECIAL_PHRASE_H_
+#endif  // __PYZY_DYNAMIC_SPECIAL_PHRASE_H_
 

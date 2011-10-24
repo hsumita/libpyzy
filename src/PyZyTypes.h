@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __TYPES_H_
-#define __TYPES_H_
+#ifndef __PYZY_TYPES_H_
+#define __PYZY_TYPES_H_
 
 #include <glib.h>
 
@@ -144,4 +144,4 @@ struct Pinyin {
 
 };  // namespace PyZy
 
-#endif  // __TYPES_H_
+#endif  // __PYZY_TYPES_H_

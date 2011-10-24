@@ -20,8 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __BOPOMOFO_H_
-#define __BOPOMOFO_H_
+#ifndef __PYZY_BOPOMOFO_H_
+#define __PYZY_BOPOMOFO_H_
 
 #define MAX_BOPOMOFO_LEN (4)
 
@@ -78,4 +78,4 @@ const static wchar_t bopomofo_char[] = {
     L'ˊ', L'ˇ', L'ˋ', L'˙',
 };
 
-#endif /* __BOPOMOFO_H_ */
+#endif /* __PYZY_BOPOMOFO_H_ */

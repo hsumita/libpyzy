@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __UTIL_H_
-#define __UTIL_H_
+#ifndef __PYZY_UTIL_H_
+#define __PYZY_UTIL_H_
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -37,7 +37,7 @@
 #include <string>
 #include <glib/gtypes.h>
 
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#ifdef __GXX_EXPERIMENTAL_CXX0X__PYZY_
 #  include <memory>
 #else
 #  include <boost/shared_ptr.hpp>
@@ -51,7 +51,7 @@ namespace std {
     //      but scoped_ptr cannot.
     template<typename T> class unique_ptr : public boost::scoped_ptr<T> {};
 };
-#endif  // __GXX_EXPERIMENTAL_CXX0X__
+#endif  // __GXX_EXPERIMENTAL_CXX0X__PYZY_
 
 namespace PyZy {
 
@@ -118,4 +118,4 @@ public:
 
 };  // namespace PyZy
 
-#endif  // __UTIL_H_
+#endif  // __PYZY_UTIL_H_

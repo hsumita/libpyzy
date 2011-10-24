@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-#ifndef __DATABASE_H_
-#define __DATABASE_H_
+#ifndef __PYZY_DATABASE_H_
+#define __PYZY_DATABASE_H_
 
 #include "PyZyUtil.h"
 #include "PyZyString.h"
@@ -112,4 +112,4 @@ private:
 
 };  // namespace PyZy
 
-#endif  // __DATABASE_H_
+#endif  // __PYZY_DATABASE_H_
