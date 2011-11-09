@@ -714,14 +714,6 @@ Database::remove (const Phrase & phrase)
 }
 
 void
-Database::init ()
-{
-    if (m_instance.get () == NULL) {
-        m_instance.reset (new Database ("libpyzy"));
-    }
-}
-
-void
 Database::init (const std::string & user_data_dir)
 {
     String cache_dir = g_get_user_cache_dir ();

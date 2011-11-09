@@ -48,14 +48,12 @@ public:
     bool specialPhrases (void) const;
     bool modeSimp (void) const;
     unsigned int bopomofoKeyboardMapping (void) const;
-    unsigned int pageSize (void) const;
 
     void setOption (unsigned int value);
     void setDoublePinyinSchema (unsigned int value);
     void setSpecialPhrases (bool value);
     void setModeSimp (bool value);
     void setBopomofoKeyboardMapping (unsigned int value);
-    void setPageSize (unsigned int value);
 
 protected:
     struct ConfigImpl;
@@ -67,10 +65,10 @@ class PinyinConfig : public Config {
 public:
     static void init ();
     static PinyinConfig & instance (void);
+    virtual void readDefaultValues (void);
 
 protected:
     PinyinConfig ();
-    virtual void readDefaultValues (void);
 
 private:
     struct PinyinConfigImpl;
@@ -82,10 +80,10 @@ class BopomofoConfig : public Config {
 public:
     static void init ();
     static BopomofoConfig & instance (void);
+    virtual void readDefaultValues (void);
 
 protected:
     BopomofoConfig ();
-    virtual void readDefaultValues (void);
 
 private:
     struct BopomofoConfigImpl;

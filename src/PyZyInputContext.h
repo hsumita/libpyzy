@@ -40,39 +40,6 @@ struct Candidate {
     CandidateType type;
 };
 
-// lower 8bits of VKeyCode should be zero.
-enum VKeyCode {
-    VKEY_FIRST = 1 << 8,
-
-    VKEY_COMMIT = (10 << 8),
-    VKEY_RESET = (11 << 8),
-
-    VKEY_CURSOR_RIGHT = (20 << 8),
-    VKEY_CURSOR_LEFT = (21 << 8),
-    VKEY_CURSOR_RIGHT_BY_WORD = (22 << 8),
-    VKEY_CURSOR_LEFT_BY_WORD = (23 << 8),
-    VKEY_CURSOR_TO_BEGIN = (24 << 8),
-    VKEY_CURSOR_TO_END = (25 << 8),
-
-    VKEY_CANDIDATE_SELECT = (30 << 8),
-    VKEY_CANDIDATE_FOCUS = (31 << 8),
-    VKEY_CANDIDATE_FOCUS_PREVIOUS = (32 << 8),
-    VKEY_CANDIDATE_FOCUS_NEXT = (33 << 8),
-    VKEY_CANDIDATE_RESET = (34 << 8),
-
-    VKEY_PAGE_PREVIOUS = (40 << 8),
-    VKEY_PAGE_NEXT = (41 << 8),
-    VKEY_PAGE_BEGIN = (42 << 8),
-    VKEY_PAGE_END = (43 << 8),
-
-    VKEY_DELETE_CHARACTER_BEFORE = (50 << 8),
-    VKEY_DELETE_CHARACTER_AFTER = (51 << 8),
-    VKEY_DELETE_WORD_BEFORE = (52 << 8),
-    VKEY_DELETE_WORD_AFTER = (53 << 8),
-
-    VKEY_BOPOMOFO_SELECT_MODE = (60 << 8),
-};
-
 class InputContext {
 public:
     virtual ~InputContext (void) { }
@@ -93,6 +60,37 @@ public:
         BOPOMOFO,
     };
 
+    enum CommitType {
+        TYPE_RAW,
+        TYPE_PHONETIC,
+        TYPE_CONVERTED
+    };
+
+    /* member functions */
+    virtual bool insert (char ch) = 0;
+    virtual void commit (CommitType type = TYPE_CONVERTED) = 0;
+    virtual void reset (void) = 0;
+
+    virtual bool moveCursorRight (void) = 0;
+    virtual bool moveCursorLeft (void) = 0;
+    virtual bool moveCursorRightByWord (void) = 0;
+    virtual bool moveCursorLeftByWord (void) = 0;
+    virtual bool moveCursorToBegin (void) = 0;
+    virtual bool moveCursorToEnd (void) = 0;
+
+    virtual bool selectCandidate (unsigned int index) = 0;
+    virtual bool focusCandidatePrevious (void) = 0;
+    virtual bool focusCandidateNext (void) = 0;
+    virtual bool resetCandidate (unsigned int index) = 0;
+    virtual bool unselectCandidates () = 0;
+
+    virtual bool removeCharBefore (void) = 0;
+    virtual bool removeCharAfter (void) = 0;
+    virtual bool removeWordBefore (void) = 0;
+    virtual bool removeWordAfter (void) = 0;
+
+    virtual void bopomofoSelectMode () = 0;
+
     /* static functions */
     static void init ();
     static void init (const std::string & user_data_dir);
@@ -101,20 +99,15 @@ public:
                                  Config & config,
                                  InputContext::Observer * observer);
 
-    virtual bool processKeyEvent (unsigned short key_event) = 0;
-    virtual void update (void) = 0;
-    virtual void commit (void) = 0;
-    virtual void reset (void) = 0;
-
+    /* accessors */
+    virtual std::string inputText () const = 0;
     virtual std::string selectedText (void) const = 0;
     virtual std::string conversionText (void) const = 0;
     virtual std::string restText (void) const = 0;
     virtual std::string auxiliaryText (void) const = 0;
     virtual std::vector<Candidate> candidates () const = 0;
-    virtual std::string inputText () const = 0;
     virtual unsigned int cursor () const = 0;
     virtual unsigned int focusedCandidate () const = 0;
-    virtual unsigned int page () const = 0;
 };
 
 }; // namespace PyZy

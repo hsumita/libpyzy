@@ -41,8 +41,7 @@ const static gchar * bopomofo_select_keys[] = {
 };
 
 BopomofoContext::BopomofoContext (Config & config, PhoneticContext::Observer *observer)
-    : PhoneticContext (config, observer),
-      m_select_mode (FALSE)
+    : PhoneticContext (config, observer)
 {
 }
 
@@ -50,19 +49,16 @@ BopomofoContext::~BopomofoContext (void)
 {
 }
 
-void
-BopomofoContext::reset ()
+bool
+BopomofoContext::insert (char ch)
 {
-    m_select_mode = FALSE;
-    PhoneticContext::reset ();
-}
+    if (keyvalToBopomofo (ch) == BOPOMOFO_ZERO) {
+        return false;
+    }
 
-gboolean
-BopomofoContext::insert (gint ch)
-{
     /* is full */
     if (G_UNLIKELY (m_text.length () >= MAX_PINYIN_LEN))
-        return TRUE;
+        return true;
 
     m_text.insert (m_cursor++, ch);
 
@@ -83,14 +79,14 @@ BopomofoContext::insert (gint ch)
             updateAuxiliaryText ();
         }
     }
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 BopomofoContext::removeCharBefore (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     m_cursor --;
     m_text.erase (m_cursor, 1);
@@ -98,27 +94,27 @@ BopomofoContext::removeCharBefore (void)
     updateSpecialPhrases ();
     updatePinyin ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 BopomofoContext::removeCharAfter (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_text.erase (m_cursor, 1);
     updatePreeditText ();
     updateAuxiliaryText ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 BopomofoContext::removeWordBefore (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     guint cursor;
 
@@ -137,57 +133,57 @@ BopomofoContext::removeWordBefore (void)
     updateSpecialPhrases ();
     updatePhraseEditor ();
     update ();
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 BopomofoContext::removeWordAfter (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_text.erase (m_cursor, -1);
     updatePreeditText ();
     updateAuxiliaryText ();
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 BopomofoContext::moveCursorLeft (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     m_cursor --;
     updateSpecialPhrases ();
     updatePinyin ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 BopomofoContext::moveCursorRight (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_cursor ++;
 
     updateSpecialPhrases ();
     updatePinyin ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 BopomofoContext::moveCursorLeftByWord (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     if (G_UNLIKELY (m_cursor > m_pinyin_len)) {
         m_cursor = m_pinyin_len;
-        return TRUE;
+        return true;
     }
 
     const Pinyin & p = *m_pinyin.back ();
@@ -199,20 +195,20 @@ BopomofoContext::moveCursorLeftByWord (void)
     updatePhraseEditor ();
     update ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 BopomofoContext::moveCursorRightByWord (void)
 {
     return moveCursorToEnd ();
 }
 
-gboolean
+bool
 BopomofoContext::moveCursorToBegin (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     m_cursor = 0;
     m_pinyin.clear ();
@@ -222,62 +218,20 @@ BopomofoContext::moveCursorToBegin (void)
     updatePhraseEditor ();
     update ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 BopomofoContext::moveCursorToEnd (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_cursor = m_text.length ();
     updateSpecialPhrases ();
     updatePinyin ();
 
-    return TRUE;
-}
-
-bool
-BopomofoContext::processKeyEvent (unsigned short key_event)
-{
-  const guint key_code = key_event & 0x00ff;
-  const guint vkey_code = key_event & 0xff00;
-
-  if (vkey_code == 0 && keyvalToBopomofo (key_code) != BOPOMOFO_ZERO) {
-      m_select_mode = FALSE;
-      return insert (key_code);
-  }
-
-  switch (vkey_code) {
-  case VKEY_BOPOMOFO_SELECT_MODE:
-      m_select_mode = TRUE;
-      return TRUE;
-      
-  case VKEY_CANDIDATE_SELECT:
-  case VKEY_CANDIDATE_FOCUS:
-  case VKEY_CANDIDATE_RESET:
-  case VKEY_PAGE_PREVIOUS:
-  case VKEY_PAGE_NEXT:
-  case VKEY_PAGE_BEGIN:
-  case VKEY_PAGE_END:
-      m_select_mode = TRUE;
-      break;
-      
-  case VKEY_CURSOR_RIGHT:
-  case VKEY_CURSOR_LEFT:
-  case VKEY_CURSOR_RIGHT_BY_WORD:
-  case VKEY_CURSOR_LEFT_BY_WORD:
-  case VKEY_CURSOR_TO_BEGIN:
-  case VKEY_CURSOR_TO_END:
-  case VKEY_DELETE_CHARACTER_AFTER:
-  case VKEY_DELETE_WORD_BEFORE:
-  case VKEY_DELETE_WORD_AFTER:
-      m_select_mode = FALSE;
-      break;
-  }
-
-  return PhoneticContext::processKeyEvent (key_event);
+    return true;
 }
 
 void
@@ -288,7 +242,7 @@ BopomofoContext::updatePinyin (void)
         m_pinyin_len = 0;
     }
     else {
-        bopomofo.clear();
+        std::wstring bopomofo;
         for(String::iterator i = m_text.begin (); i != m_text.end (); ++i) {
             bopomofo += bopomofo_char[keyvalToBopomofo (*i)];
         }
@@ -353,14 +307,14 @@ BopomofoContext::updateAuxiliaryText (void)
 }
 
 void
-BopomofoContext::commit ()
+BopomofoContext::commit (CommitType type)
 {
     if (G_UNLIKELY (m_buffer.empty ()))
         return;
 
     m_buffer.clear ();
 
-    if (m_select_mode) {
+    if (G_LIKELY (type == TYPE_CONVERTED)) {
         m_buffer << m_phrase_editor.selectedString ();
 
         const gchar *p;
@@ -376,13 +330,20 @@ BopomofoContext::commit ()
         while (*p != '\0') {
             m_buffer.appendUnichar ((gunichar)bopomofo_char[keyvalToBopomofo (*p++)]);
         }
+
+        m_phrase_editor.commit ();
     }
-    else {
-        m_buffer << m_text;
+    else if (type == TYPE_PHONETIC) {
+        const gchar *p = m_text;
+        while (*p != '\0') {
+            m_buffer.appendUnichar ((gunichar)bopomofo_char[keyvalToBopomofo (*p++)]);
+        }
+    } else {
+        m_buffer = m_text;
+        m_phrase_editor.reset ();
     }
-    
-    m_phrase_editor.commit ();
-    reset ();
+
+    resetContext ();
     update ();
     PhoneticContext::commitText (m_buffer);
 }

@@ -33,36 +33,31 @@ class BopomofoContext : public PhoneticContext {
 
 public:
     BopomofoContext (Config & config, PhoneticContext::Observer *observer);
-    ~BopomofoContext (void);
-    bool processKeyEvent (unsigned short key_event);
-    void reset ();
+    virtual ~BopomofoContext (void);
+
+    /* API of InputContext */
+    virtual bool insert (char ch);
+    virtual void commit (CommitType type);
+
+    virtual bool removeCharBefore (void);
+    virtual bool removeCharAfter (void);
+    virtual bool removeWordBefore (void);
+    virtual bool removeWordAfter (void);
+
+    virtual bool moveCursorLeft (void);
+    virtual bool moveCursorRight (void);
+    virtual bool moveCursorLeftByWord (void);
+    virtual bool moveCursorRightByWord (void);
+    virtual bool moveCursorToBegin (void);
+    virtual bool moveCursorToEnd (void);
 
 protected:
-    std::wstring bopomofo;
-    gboolean m_select_mode;
+    virtual void updateAuxiliaryText ();
+    virtual void updatePinyin ();
+    virtual void updatePreeditText ();
 
-    gboolean processBopomofo (guint keyval, guint keycode, guint modifiers);
-
-    void updateAuxiliaryText ();
-    void updatePinyin ();
-    void updatePreeditText ();
-
-    void commit ();
-
-    gboolean insert (gint ch);
+    bool processBopomofo (guint keyval, guint keycode, guint modifiers);
     gint keyvalToBopomofo(gint ch);
-
-    gboolean removeCharBefore (void);
-    gboolean removeCharAfter (void);
-    gboolean removeWordBefore (void);
-    gboolean removeWordAfter (void);
-
-    gboolean moveCursorLeft (void);
-    gboolean moveCursorRight (void);
-    gboolean moveCursorLeftByWord (void);
-    gboolean moveCursorRightByWord (void);
-    gboolean moveCursorToBegin (void);
-    gboolean moveCursorToEnd (void);
 };
 
 };

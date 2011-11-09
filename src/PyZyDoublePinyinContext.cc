@@ -49,31 +49,35 @@ DoublePinyinContext::DoublePinyinContext (Config & config, PhoneticContext::Obse
 {
 }
 
-gboolean
-DoublePinyinContext::insert (gint ch)
+DoublePinyinContext::~DoublePinyinContext ()
+{
+}
+
+bool
+DoublePinyinContext::insert (char ch)
 {
     gint id;
     /* is full */
     if (G_UNLIKELY (m_text.length () >= MAX_PINYIN_LEN))
-        return TRUE;
+        return true;
 
     id = ID (ch);
     if (id == -1) {
         /* it is not availidate ch */
-        return FALSE;
+        return false;
     }
 
     if (G_UNLIKELY (m_text.empty () &&
         ID_TO_SHENG (id) == PINYIN_ID_VOID)) {
-        return FALSE;
+        return false;
     }
 
     m_text.insert (m_cursor++, ch);
 
-    if (m_cursor > m_pinyin_len + 2 || updatePinyin (FALSE) == FALSE) {
+    if (m_cursor > m_pinyin_len + 2 || updatePinyin (false) == false) {
         if (!IS_ALPHA (ch)) {
             m_text.erase (--m_cursor, 1);
-            return FALSE;
+            return false;
         }
         else {
             if (updateSpecialPhrases ()) {
@@ -83,27 +87,27 @@ DoublePinyinContext::insert (gint ch)
                 updatePreeditText ();
                 updateAuxiliaryText ();
             }
-            return TRUE;
+            return true;
         }
     }
     else {
         updateSpecialPhrases ();
         updatePhraseEditor ();
         update ();
-        return TRUE;
+        return true;
     }
 }
 
-gboolean
+bool
 DoublePinyinContext::removeCharBefore (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     m_cursor --;
     m_text.erase (m_cursor, 1);
 
-    if (updatePinyin (FALSE)) {
+    if (updatePinyin (false)) {
         updateSpecialPhrases ();
         updatePhraseEditor ();
         update ();
@@ -117,14 +121,14 @@ DoublePinyinContext::removeCharBefore (void)
             updateAuxiliaryText ();
         }
     }
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 DoublePinyinContext::removeCharAfter (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_text.erase (m_cursor, 1);
     if (updateSpecialPhrases ()) {
@@ -134,14 +138,14 @@ DoublePinyinContext::removeCharAfter (void)
         updatePreeditText ();
         updateAuxiliaryText ();
     }
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 DoublePinyinContext::removeWordBefore (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     if (G_UNLIKELY (m_cursor > m_pinyin_len)) {
         m_text.erase (m_pinyin_len, m_cursor - m_pinyin_len);
@@ -164,14 +168,14 @@ DoublePinyinContext::removeWordBefore (void)
         update ();
     }
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 DoublePinyinContext::removeWordAfter (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_text.erase (m_cursor);
     if (updateSpecialPhrases ()) {
@@ -181,14 +185,14 @@ DoublePinyinContext::removeWordAfter (void)
         updatePreeditText ();
         updateAuxiliaryText ();
     }
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 DoublePinyinContext::moveCursorLeft (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     m_cursor --;
 
@@ -202,7 +206,7 @@ DoublePinyinContext::moveCursorLeft (void)
         }
     }
     else {
-        if (updatePinyin (FALSE)) {
+        if (updatePinyin (false)) {
             updateSpecialPhrases ();
             updatePhraseEditor ();
             update ();
@@ -218,17 +222,17 @@ DoublePinyinContext::moveCursorLeft (void)
         }
     }
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 DoublePinyinContext::moveCursorRight (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_cursor ++;
-    if (updatePinyin (FALSE)) {
+    if (updatePinyin (false)) {
         updateSpecialPhrases ();
         updatePhraseEditor ();
         update ();
@@ -242,14 +246,14 @@ DoublePinyinContext::moveCursorRight (void)
             updateAuxiliaryText ();
         }
     }
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 DoublePinyinContext::moveCursorLeftByWord (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     if (G_UNLIKELY (m_cursor > m_pinyin_len)) {
         m_cursor = m_pinyin_len;
@@ -269,20 +273,20 @@ DoublePinyinContext::moveCursorLeftByWord (void)
         update ();
     }
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 DoublePinyinContext::moveCursorRightByWord (void)
 {
     return moveCursorToEnd ();
 }
 
-gboolean
+bool
 DoublePinyinContext::moveCursorToBegin (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     m_cursor = 0;
     m_pinyin.clear ();
@@ -291,17 +295,17 @@ DoublePinyinContext::moveCursorToBegin (void)
     updatePhraseEditor ();
     update ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 DoublePinyinContext::moveCursorToEnd (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_cursor = m_text.length ();
-    if (updatePinyin (FALSE)) {
+    if (updatePinyin (false)) {
         updateSpecialPhrases ();
         updatePhraseEditor ();
         update ();
@@ -315,13 +319,7 @@ DoublePinyinContext::moveCursorToEnd (void)
             updateAuxiliaryText ();
         }
     }
-    return TRUE;
-}
-
-void
-DoublePinyinContext::reset (void)
-{
-    PinyinContext::reset ();
+    return true;
 }
 
 inline const Pinyin *
@@ -385,20 +383,20 @@ DoublePinyinContext::isPinyin (gint i, gint j)
     }
 }
 
-inline gboolean
-DoublePinyinContext::updatePinyin (gboolean all)
+inline bool
+DoublePinyinContext::updatePinyin (bool all)
 {
-    gboolean retval = FALSE;
+    gboolean retval = false;
 
     if (all &&
         (m_pinyin_len != 0 || !m_pinyin.empty ())) {
         m_pinyin.clear ();
         m_pinyin_len = 0;
-        retval = TRUE;
+        retval = true;
     }
 
     if (m_pinyin_len > m_cursor) {
-        retval = TRUE;
+        retval = true;
         while (m_pinyin_len > m_cursor) {
             m_pinyin_len = m_pinyin.back ().begin;
             m_pinyin.pop_back ();
@@ -411,7 +409,7 @@ DoublePinyinContext::updatePinyin (gboolean all)
 
     if (m_pinyin_len < m_cursor) {
         guint len = m_pinyin_len;
-        if (m_pinyin.empty () == FALSE &&
+        if (m_pinyin.empty () == false &&
             m_pinyin.back ()->flags & PINYIN_INCOMPLETE_PINYIN) {
             const Pinyin *pinyin = isPinyin (ID (m_text[m_pinyin_len -1]),ID (m_text[m_pinyin_len]));
             if (pinyin) {
@@ -443,24 +441,9 @@ DoublePinyinContext::updatePinyin (gboolean all)
         }
         if (len == m_pinyin_len)
             return retval;
-        return TRUE;
+        return true;
     }
     return retval;
-}
-
-bool
-DoublePinyinContext::processKeyEvent (unsigned short key_event)
-{
-    const guint key_code = key_event && 0xff;
-
-    // handle ';' key
-    if (G_UNLIKELY (key_code == ';')) {
-        if (insert (key_code)) {
-            return TRUE;
-        }
-    }
-
-    return PinyinContext::processKeyEvent (key_event);
 }
 
 };  // namespace PyZy

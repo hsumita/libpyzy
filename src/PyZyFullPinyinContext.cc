@@ -34,18 +34,12 @@ FullPinyinContext::~FullPinyinContext (void)
 {
 }
 
-void
-FullPinyinContext::reset (void)
-{
-    PinyinContext::reset ();
-}
-
-gboolean
-FullPinyinContext::insert (gint ch)
+bool
+FullPinyinContext::insert (char ch)
 {
     /* is full */
     if (G_UNLIKELY (m_text.length () >= MAX_PINYIN_LEN))
-        return TRUE;
+        return true;
 
     m_text.insert (m_cursor++, ch);
 
@@ -66,14 +60,14 @@ FullPinyinContext::insert (gint ch)
             updateAuxiliaryText ();
         }
     }
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 FullPinyinContext::removeCharBefore (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     m_cursor --;
     m_text.erase (m_cursor, 1);
@@ -81,27 +75,27 @@ FullPinyinContext::removeCharBefore (void)
     updateSpecialPhrases ();
     updatePinyin ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 FullPinyinContext::removeCharAfter (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_text.erase (m_cursor, 1);
     updatePreeditText ();
     updateAuxiliaryText ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 FullPinyinContext::removeWordBefore (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     guint cursor;
 
@@ -120,56 +114,56 @@ FullPinyinContext::removeWordBefore (void)
     updateSpecialPhrases ();
     updatePhraseEditor ();
     update ();
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 FullPinyinContext::removeWordAfter (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_text.erase (m_cursor, -1);
     updatePreeditText ();
     updateAuxiliaryText ();
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 FullPinyinContext::moveCursorLeft (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     m_cursor --;
     updateSpecialPhrases ();
     updatePinyin ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 FullPinyinContext::moveCursorRight (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_cursor ++;
     updateSpecialPhrases ();
     updatePinyin ();
 
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 FullPinyinContext::moveCursorLeftByWord (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     if (G_UNLIKELY (m_cursor > m_pinyin_len)) {
         m_cursor = m_pinyin_len;
-        return TRUE;
+        return true;
     }
 
     const Pinyin & p = *m_pinyin.back ();
@@ -180,20 +174,20 @@ FullPinyinContext::moveCursorLeftByWord (void)
     updateSpecialPhrases ();
     updatePhraseEditor ();
     update ();
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 FullPinyinContext::moveCursorRightByWord (void)
 {
     return moveCursorToEnd ();
 }
 
-gboolean
+bool
 FullPinyinContext::moveCursorToBegin (void)
 {
     if (G_UNLIKELY (m_cursor == 0))
-        return FALSE;
+        return false;
 
     m_cursor = 0;
     m_pinyin.clear ();
@@ -202,20 +196,20 @@ FullPinyinContext::moveCursorToBegin (void)
     updateSpecialPhrases ();
     updatePhraseEditor ();
     update ();
-    return TRUE;
+    return true;
 }
 
-gboolean
+bool
 FullPinyinContext::moveCursorToEnd (void)
 {
     if (G_UNLIKELY (m_cursor == m_text.length ()))
-        return FALSE;
+        return false;
 
     m_cursor = m_text.length ();
     updateSpecialPhrases ();
     updatePinyin ();
 
-    return TRUE;
+    return true;
 }
 
 void

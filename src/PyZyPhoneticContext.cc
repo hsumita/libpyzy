@@ -31,7 +31,7 @@ PhoneticContext::PhoneticContext (Config & config, PhoneticContext::Observer *ob
       m_phrase_editor (config),
       m_observer (observer)
 {
-    reset ();
+    resetContext ();
 }
 
 PhoneticContext::~PhoneticContext ()
@@ -39,124 +39,16 @@ PhoneticContext::~PhoneticContext ()
 }
 
 bool
-PhoneticContext::processKeyEvent (unsigned short key)
-{
-    const guint key_code = key & 0x00ff;
-    const guint vkey_code = key & 0xff00;
-
-    if (vkey_code == 0) {
-        if ('a' <= key_code && key_code <= 'z') {
-            return insert (key_code);
-        }
-    } else {
-        const guint key_num = key_code - '1';
-
-        switch (vkey_code) {
-        case VKEY_COMMIT:
-            commit ();
-            return TRUE;
-        case VKEY_RESET:
-            reset ();
-            update ();
-            return TRUE;
-
-        case VKEY_CURSOR_RIGHT:
-            if (m_phrase_editor.unselectCandidates ()) {
-                update ();
-                return TRUE;
-            } else {
-                return moveCursorRight();
-            }
-        case VKEY_CURSOR_LEFT:
-            if (m_phrase_editor.unselectCandidates ()) {
-                update ();
-                return TRUE;
-            } else {
-                return moveCursorLeft();
-            }
-        case VKEY_CURSOR_RIGHT_BY_WORD:
-            if (m_phrase_editor.unselectCandidates ()) {
-                update ();
-                return TRUE;
-            } else {
-                return moveCursorRightByWord ();
-            }
-        case VKEY_CURSOR_LEFT_BY_WORD:
-            if (m_phrase_editor.unselectCandidates ()) {
-                update ();
-                return TRUE;
-            } else {
-                return moveCursorLeftByWord ();
-            }
-        case VKEY_CURSOR_TO_BEGIN:
-            if (m_phrase_editor.unselectCandidates ()) {
-                update ();
-                return TRUE;
-            } else {
-                return moveCursorToBegin();
-            }
-        case VKEY_CURSOR_TO_END:
-            if (m_phrase_editor.unselectCandidates ()) {
-                update ();
-                return TRUE;
-            } else {
-                return moveCursorToEnd();
-            }
-
-        case VKEY_CANDIDATE_SELECT:
-            return selectCandidateInPage (key_num);
-        case VKEY_CANDIDATE_FOCUS:
-            return focusCandidateInPage (key_num);
-        case VKEY_CANDIDATE_FOCUS_PREVIOUS:
-            return focusCandidatePrevious ();
-        case VKEY_CANDIDATE_FOCUS_NEXT:
-            return focusCandidateNext ();
-        case VKEY_CANDIDATE_RESET:
-            return resetCandidateInPage (key_num);
-
-        case VKEY_PAGE_PREVIOUS:
-            selectPage (MAX(1, page ()) - 1);
-            return TRUE;
-        case VKEY_PAGE_NEXT:
-            selectPage (page () + 1);
-            return TRUE;
-        case VKEY_PAGE_BEGIN:
-            selectPage (0);
-            return TRUE;
-        case VKEY_PAGE_END:
-            {
-                const guint guint_max = (guint)-1;
-                selectPage (guint_max);
-            }
-            return TRUE;
-
-        case VKEY_DELETE_CHARACTER_BEFORE:
-            return removeCharBefore();
-        case VKEY_DELETE_CHARACTER_AFTER:
-            return removeCharAfter();
-        case VKEY_DELETE_WORD_BEFORE:
-            return removeWordBefore();
-        case VKEY_DELETE_WORD_AFTER:
-            return removeWordAfter();
-        }
-    }
-
-    g_warning ("Can't handle KeyEvent (keycode=%d, vkeycode=%d)\n",
-               key_code, vkey_code);
-    return FALSE;
-}
-
-gboolean
 PhoneticContext::updateSpecialPhrases (void)
 {
     guint size = m_special_phrases.size ();
     m_special_phrases.clear ();
 
     if (!m_config.specialPhrases ())
-        return FALSE;
+        return false;
 
     if (!m_selected_special_phrase.empty ())
-        return FALSE;
+        return false;
 
     guint begin = m_phrase_editor.cursorInChar ();
     guint end = m_cursor;
@@ -168,6 +60,13 @@ PhoneticContext::updateSpecialPhrases (void)
     }
 
     return size != m_special_phrases.size () || size != 0;
+}
+
+void
+PhoneticContext::reset (void)
+{
+    resetContext ();
+    update ();
 }
 
 void
@@ -222,75 +121,51 @@ PhoneticContext::updatePreeditText (void)
 }
 
 void
-PhoneticContext::reset (void)
+PhoneticContext::resetContext (void)
 {
+    m_cursor = 0;
+    m_focused_candidate = 0;
     m_pinyin.clear ();
     m_pinyin_len = 0;
     m_phrase_editor.reset ();
     m_special_phrases.clear ();
     m_selected_special_phrase.clear ();
-
-    m_cursor = 0;
-    m_focused_candidate = 0;
     m_text.clear ();
     m_preedit_text.clear ();
+    m_candidates.clear ();
+    m_auxiliary_text.clear ();
 }
 
-gboolean
-PhoneticContext::focusCandidateInPage (guint i)
-{
-    return focusCandidate (page () * m_config.pageSize () + i);
-}
-
-gboolean
+bool
 PhoneticContext::focusCandidatePrevious ()
 {
     if (G_UNLIKELY (m_focused_candidate == 0)) {
-        return FALSE;
+        return false;
     }
     return focusCandidate (m_focused_candidate - 1);
 }
 
-gboolean
+bool
 PhoneticContext::focusCandidateNext ()
 {
     if (G_UNLIKELY (m_focused_candidate >= m_candidates.size ())) {
-        return FALSE;
+        return false;
     }
     return focusCandidate (m_focused_candidate + 1);
 }
 
-gboolean
-PhoneticContext::focusCandidate (guint i)
+bool
+PhoneticContext::focusCandidate (unsigned int i)
 {
     if (G_UNLIKELY (i >= m_candidates.size ())) {
         g_warning ("Too big index. Can't focus to selected candidate.");
-        return FALSE;
+        return false;
     }
     m_focused_candidate = i;
 
     update ();
 
-    return TRUE;
-}
-
-void
-PhoneticContext::selectPage (guint i)
-{
-    if (G_UNLIKELY (m_candidates.size () == 0)) {
-        m_focused_candidate = 0;
-        return;
-    }
-
-    const guint size = m_config.pageSize ();
-    const guint max_page = (m_candidates.size () - 1) / size;
-    if (i > max_page) {
-        i = max_page;
-    }
-
-    m_focused_candidate = MIN (m_candidates.size (), i * size + m_focused_candidate % size);
-
-    update ();
+    return true;
 }
 
 void
@@ -301,10 +176,10 @@ PhoneticContext::update ()
     updateAuxiliaryText ();
 }
 
-gboolean
-PhoneticContext::selectCandidate (guint i)
+bool
+PhoneticContext::selectCandidate (unsigned int i)
 {
-    if (i >= m_config.pageSize ()) {
+    if (i >= m_candidates.size ()) {
         g_warning ("selectCandidate(%ud): Too big index!\n", i);
     }
 
@@ -320,7 +195,7 @@ PhoneticContext::selectCandidate (guint i)
             update ();
         }
 
-        return TRUE;
+        return true;
     }
 
     i -= m_special_phrases.size ();
@@ -334,23 +209,17 @@ PhoneticContext::selectCandidate (guint i)
         else {
             commit ();
         }
-        return TRUE;
+        return true;
     }
 
-    return FALSE;
+    return false;
 }
 
-gboolean
-PhoneticContext::selectCandidateInPage (guint i)
-{
-    return selectCandidate (page () * m_config.pageSize () + i);
-}
-
-gboolean
-PhoneticContext::resetCandidate (guint i)
+bool
+PhoneticContext::resetCandidate (unsigned int i)
 {
     if (i < m_special_phrases.size ()) {
-        return FALSE;
+        return false;
     }
     i -= m_special_phrases.size ();
 
@@ -358,13 +227,17 @@ PhoneticContext::resetCandidate (guint i)
         update ();
     }
 
-    return TRUE;
+    return true;
 }
 
-gboolean
-PhoneticContext::resetCandidateInPage (guint i)
+bool
+PhoneticContext::unselectCandidates ()
 {
-    return resetCandidate (page () * m_config.pageSize () + i);
+    if (!m_phrase_editor.unselectCandidates ()) {
+        return false;
+    }
+    update ();
+    return true;
 }
 
 };  // namespace PyZy

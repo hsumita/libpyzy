@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 class PyZyTest : public testing::Test {
 protected:
     virtual void SetUp () {
-        PhoneticContext::init ("libpyzy-test");
+        InputContext::init ("libpyzy-test");
         PinyinConfig::init ();
         BopomofoConfig::init ();
     }
@@ -95,7 +95,7 @@ private:
 
 void insertKeys (PhoneticContext &context, const string &keys) {
     for (guint i = 0; i < keys.size (); ++i) {
-        context.processKeyEvent (keys[i]);
+        context.insert (keys[i]);
     }
 }
 
@@ -121,7 +121,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_RESET);
+        context.reset ();
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -153,7 +153,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_COMMIT);
+        context.commit (InputContext::TYPE_CONVERTED);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -185,7 +185,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_CANDIDATE_SELECT | '1');
+        context.selectCandidate (0);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -217,7 +217,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '1');
+        context.selectCandidate (0);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -249,7 +249,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CURSOR_LEFT);
+        context.moveCursorLeft ();
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhii", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -263,7 +263,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '1');
+        context.selectCandidate (0);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhii", context.inputText ()); 
         EXPECT_EQ ("AA制", context.selectedText ());
@@ -277,7 +277,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_COMMIT);
+        context.commit (InputContext::TYPE_CONVERTED);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -309,7 +309,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_FOCUS | '2');
+        context.focusCandidate (1);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -323,10 +323,10 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '4');
+        context.selectCandidate (4);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
-        EXPECT_EQ ("啊", context.selectedText ());
+        EXPECT_EQ ("阿", context.selectedText ());
         EXPECT_EQ ("啊之", context.conversionText ());
         EXPECT_EQ ("", context.restText ());
         EXPECT_EQ ("a zhi|", context.auxiliaryText ());
@@ -337,7 +337,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_CURSOR_LEFT);
+        context.unselectCandidates ();
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -351,7 +351,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_CURSOR_LEFT);
+        context.moveCursorLeft ();
         EXPECT_EQ (4, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -365,7 +365,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent ('i');
+        context.insert ('i');
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhii", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -379,7 +379,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_DELETE_CHARACTER_BEFORE);
+        context.removeCharBefore ();
         EXPECT_EQ (4, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -393,7 +393,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CURSOR_RIGHT);
+        context.moveCursorRight ();
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -407,7 +407,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_DELETE_WORD_BEFORE);
+        context.removeWordBefore ();
         EXPECT_EQ (2, context.cursor ());
         EXPECT_EQ ("aa", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -435,7 +435,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '2');
+        context.selectCandidate (1);
         EXPECT_EQ (7, context.cursor ());
         EXPECT_EQ ("aanihao", context.inputText ()); 
         EXPECT_EQ ("啊啊", context.selectedText ());
@@ -449,7 +449,7 @@ TEST_F (PyZyTest, FullPinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_COMMIT);
+        context.commit (InputContext::TYPE_CONVERTED);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -486,7 +486,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_RESET);
+        context.reset ();
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -518,7 +518,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_COMMIT);
+        context.commit (InputContext::TYPE_CONVERTED);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -550,7 +550,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_CANDIDATE_SELECT | '1');
+        context.selectCandidate (0);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -582,7 +582,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '1');
+        context.selectCandidate (0);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -614,7 +614,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CURSOR_LEFT);
+        context.moveCursorLeft ();
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhii", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -628,7 +628,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '1');
+        context.selectCandidate (0);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhii", context.inputText ()); 
         EXPECT_EQ ("AA制", context.selectedText ());
@@ -642,7 +642,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_COMMIT);
+        context.commit (InputContext::TYPE_CONVERTED);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -674,7 +674,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_FOCUS | '2');
+        context.focusCandidate (1);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -688,7 +688,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '4');
+        context.selectCandidate (3);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("阿", context.selectedText ());
@@ -703,7 +703,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
 
         // TODO(hsumita) fix. maybe we should get AA制
         observer.clear ();
-        context.processKeyEvent (VKEY_CURSOR_LEFT);
+        context.unselectCandidates ();
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -717,7 +717,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_CURSOR_LEFT);
+        context.moveCursorLeft ();
         EXPECT_EQ (4, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -731,7 +731,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent ('i');
+        context.insert ('i');
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhii", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -745,7 +745,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_DELETE_CHARACTER_BEFORE);
+        context.removeCharBefore ();
         EXPECT_EQ (4, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -759,7 +759,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CURSOR_RIGHT);
+        context.moveCursorRight ();
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -773,7 +773,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_DELETE_WORD_BEFORE);
+        context.removeWordBefore ();
         EXPECT_EQ (4, context.cursor ());
         EXPECT_EQ ("aazh", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -801,7 +801,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '2');
+        context.selectCandidate (1);
         EXPECT_EQ (8, context.cursor ());
         EXPECT_EQ ("aazhnihk", context.inputText ()); 
         EXPECT_EQ ("啊", context.selectedText ());
@@ -815,7 +815,7 @@ TEST_F (PyZyTest, DoublePinyinBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_COMMIT);
+        context.commit (InputContext::TYPE_CONVERTED);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -852,7 +852,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_RESET);
+        context.reset ();
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -884,7 +884,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_COMMIT);
+        context.commit (InputContext::TYPE_RAW);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -916,7 +916,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_CANDIDATE_SELECT | '1');
+        context.selectCandidate (0);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -948,7 +948,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '1');
+        context.selectCandidate (0);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -980,7 +980,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CURSOR_LEFT);
+        context.moveCursorLeft ();
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhii", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -994,7 +994,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '1');
+        context.selectCandidate (0);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhii", context.inputText ()); 
         EXPECT_EQ ("妈妈好吃哦", context.selectedText ());
@@ -1008,7 +1008,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_COMMIT);
+        context.commit (InputContext::TYPE_CONVERTED);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -1040,7 +1040,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_FOCUS | '2');
+        context.focusCandidate (1);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -1054,7 +1054,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '4');
+        context.selectCandidate (3);
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("慢慢", context.selectedText ());
@@ -1069,7 +1069,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
 
         // TODO(hsumita) maybe we should get AA制
         observer.clear ();
-        context.processKeyEvent (VKEY_CURSOR_LEFT);
+        context.unselectCandidates ();
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -1085,7 +1085,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         // TODO (hsumita): should we use a space as a separator of restText
         // TODO (hsumita): "ㄇㄇㄈㄘ ㄛ" is conversionText or restText ?
         observer.clear ();
-        context.processKeyEvent (VKEY_CURSOR_LEFT);
+        context.moveCursorLeft ();
         EXPECT_EQ (4, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -1099,7 +1099,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent ('i');
+        context.insert ('i');
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhii", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -1113,7 +1113,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_DELETE_CHARACTER_BEFORE);
+        context.removeCharBefore ();
         EXPECT_EQ (4, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -1127,7 +1127,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CURSOR_RIGHT);
+        context.moveCursorRight ();
         EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("aazhi", context.inputText ());
         EXPECT_EQ ("", context.selectedText ());
@@ -1141,7 +1141,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_DELETE_WORD_BEFORE);
+        context.removeWordBefore ();
         EXPECT_EQ (4, context.cursor ());
         EXPECT_EQ ("aazh", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -1169,7 +1169,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_CANDIDATE_SELECT | '2');
+        context.selectCandidate (1);
         EXPECT_EQ (8, context.cursor ());
         EXPECT_EQ ("aazhnihk", context.inputText ()); 
         EXPECT_EQ ("妈妈", context.selectedText ());
@@ -1183,7 +1183,7 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
         EXPECT_EQ (0, observer.commitTextCount ());
 
         observer.clear ();
-        context.processKeyEvent(VKEY_COMMIT);
+        context.commit (InputContext::TYPE_CONVERTED);
         EXPECT_EQ (0, context.cursor ());
         EXPECT_EQ ("", context.inputText ()); 
         EXPECT_EQ ("", context.selectedText ());
@@ -1198,189 +1198,80 @@ TEST_F (PyZyTest, BopomofoBasicTest) {
     }
 }
 
-TEST_F(PyZyTest, PagingTest) {
-    {
+TEST_F (PyZyTest, Commit) {
+    {  // Pinyin commit
         CounterObserver observer;
         FullPinyinContext context(PinyinConfig::instance (), &observer);
 
         observer.clear ();
         insertKeys (context, "nihao");
-        EXPECT_EQ (5, context.cursor ());
         EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
         EXPECT_EQ ("你好", context.conversionText ());
-        EXPECT_EQ ("", context.restText ());
         EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (5, observer.preeditTextCount ());
-        EXPECT_EQ (5, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (0, context.focusedCandidate ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_CANDIDATE_FOCUS | '4');
-        EXPECT_EQ (5, context.cursor ());
-        EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
-        EXPECT_EQ ("尼", context.conversionText ());
-        EXPECT_EQ ("hao", context.restText ());
-        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (3, context.focusedCandidate ());
+        context.commit (InputContext::TYPE_RAW);
+        EXPECT_EQ ("nihao", observer.commitedText ());
 
+        context.reset ();
         observer.clear ();
-        context.processKeyEvent (VKEY_PAGE_PREVIOUS);
-        EXPECT_EQ (5, context.cursor ());
+        insertKeys (context, "nihao");
         EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
-        EXPECT_EQ ("尼", context.conversionText ());
-        EXPECT_EQ ("hao", context.restText ());
-        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (3, context.focusedCandidate ());
-
-        observer.clear ();
-        context.processKeyEvent (VKEY_PAGE_NEXT);
-        EXPECT_EQ (5, context.cursor ());
-        EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
-        EXPECT_EQ ("腻", context.conversionText ());
-        EXPECT_EQ ("hao", context.restText ());
-        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (8, context.focusedCandidate ());
-
-        observer.clear ();
-        context.processKeyEvent (VKEY_PAGE_END);
-        EXPECT_EQ (5, context.cursor ());
-        EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
-        EXPECT_EQ ("匿", context.conversionText ());
-        EXPECT_EQ ("hao", context.restText ());
-        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (12, context.focusedCandidate ());
-
-        observer.clear ();
-        context.processKeyEvent (VKEY_PAGE_NEXT);
-        EXPECT_EQ (5, context.cursor ());
-        EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
-        EXPECT_EQ ("匿", context.conversionText ());
-        EXPECT_EQ ("hao", context.restText ());
-        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (12, context.focusedCandidate ());
-
-        observer.clear ();
-        context.processKeyEvent (VKEY_PAGE_PREVIOUS);
-        EXPECT_EQ (5, context.cursor ());
-        EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
-        EXPECT_EQ ("妮", context.conversionText ());
-        EXPECT_EQ ("hao", context.restText ());
-        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (7, context.focusedCandidate ());
-
-        observer.clear ();
-        context.processKeyEvent (VKEY_CANDIDATE_FOCUS | '1');
-        EXPECT_EQ (5, context.cursor ());
-        EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
-        EXPECT_EQ ("泥", context.conversionText ());
-        EXPECT_EQ ("hao", context.restText ());
-        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (5, context.focusedCandidate ());
-
-        observer.clear ();
-        context.processKeyEvent (VKEY_PAGE_BEGIN);
-        EXPECT_EQ (5, context.cursor ());
-        EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
         EXPECT_EQ ("你好", context.conversionText ());
-        EXPECT_EQ ("", context.restText ());
         EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (0, context.focusedCandidate ());
 
         observer.clear ();
-        context.processKeyEvent (VKEY_CANDIDATE_FOCUS_PREVIOUS);
-        EXPECT_EQ (5, context.cursor ());
+        context.commit (InputContext::TYPE_PHONETIC);
+        EXPECT_EQ ("nihao", observer.commitedText ());
+
+        context.reset ();
+        observer.clear ();
+        insertKeys (context, "nihao");
         EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
         EXPECT_EQ ("你好", context.conversionText ());
-        EXPECT_EQ ("", context.restText ());
         EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (0, observer.preeditTextCount ());
-        EXPECT_EQ (0, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (0, context.focusedCandidate ());
+
+        // To get "你好", we should call selectCandidate().
+        observer.clear ();
+        context.commit (InputContext::TYPE_CONVERTED);
+        EXPECT_EQ ("nihao", observer.commitedText ());
+    }
+
+    {  // Bopomofo commit
+        CounterObserver observer;
+        BopomofoContext context(BopomofoConfig::instance (), &observer);
 
         observer.clear ();
-        context.processKeyEvent (VKEY_CANDIDATE_FOCUS_NEXT);
-        EXPECT_EQ (5, context.cursor ());
-        EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
-        EXPECT_EQ ("你", context.conversionText ());
-        EXPECT_EQ ("hao", context.restText ());
-        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (1, context.focusedCandidate ());
-
-        observer.clear ();
-        context.processKeyEvent (VKEY_CANDIDATE_FOCUS_PREVIOUS);
-        EXPECT_EQ (5, context.cursor ());
-        EXPECT_EQ ("nihao", context.inputText ());
-        EXPECT_EQ ("", context.selectedText ());
+        insertKeys (context, "sucl");
+        EXPECT_EQ ("sucl", context.inputText ());
         EXPECT_EQ ("你好", context.conversionText ());
-        EXPECT_EQ ("", context.restText ());
-        EXPECT_EQ ("ni hao|", context.auxiliaryText ());
-        EXPECT_LT (0, context.candidates ().size ());
-        EXPECT_EQ ("", observer.commitedText ());
-        EXPECT_EQ (1, observer.preeditTextCount ());
-        EXPECT_EQ (1, observer.lookupTableCount ());
-        EXPECT_EQ (0, observer.commitTextCount ());
-        EXPECT_EQ (0, context.focusedCandidate ());
+        EXPECT_EQ ("ㄋㄧ,ㄏㄠ|", context.auxiliaryText ());
+
+        observer.clear ();
+        context.commit (InputContext::TYPE_RAW);
+        EXPECT_EQ ("sucl", observer.commitedText ());
+
+        context.reset ();
+        observer.clear ();
+        insertKeys (context, "sucl");
+        EXPECT_EQ ("sucl", context.inputText ());
+        EXPECT_EQ ("你好", context.conversionText ());
+        EXPECT_EQ ("ㄋㄧ,ㄏㄠ|", context.auxiliaryText ());
+
+        observer.clear ();
+        context.commit (InputContext::TYPE_PHONETIC);
+        EXPECT_EQ ("ㄋㄧㄏㄠ", observer.commitedText ());
+
+        context.reset ();
+        observer.clear ();
+        insertKeys (context, "sucl");
+        EXPECT_EQ ("sucl", context.inputText ());
+        EXPECT_EQ ("你好", context.conversionText ());
+        EXPECT_EQ ("ㄋㄧ,ㄏㄠ|", context.auxiliaryText ());
+
+        // To get "你好", we should call selectCandidate().
+        observer.clear ();
+        context.commit (InputContext::TYPE_CONVERTED);
+        EXPECT_EQ ("ㄋㄧㄏㄠ", observer.commitedText ());
     }
 }

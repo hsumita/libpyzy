@@ -70,8 +70,7 @@ void
 PhraseEditor::commit (void)
 {
     Database::instance ().commit (m_selected_phrases);
-    // TODO(hsumita): Should we use reset () ?
-    // reset ();
+    reset ();
 }
 
 gboolean

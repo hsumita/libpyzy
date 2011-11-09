@@ -30,12 +30,11 @@ class PinyinContext : public PhoneticContext {
 public:
     PinyinContext (Config & config, PhoneticContext::Observer *observer);
     virtual ~PinyinContext (void);
-    virtual void reset (void);
-    virtual void commit (void);
+    virtual void commit (CommitType type);
 
 protected:
-    void updateAuxiliaryText (void);
-    void updatePreeditText (void);
+    virtual void updateAuxiliaryText (void);
+    virtual void updatePreeditText (void);
 };
 
 }; // namespace PyZy

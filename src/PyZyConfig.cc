@@ -63,7 +63,6 @@ struct Config::ConfigImpl {
     unsigned int m_option_mask;
     unsigned int m_double_pinyin_schema;
     unsigned int m_bopomofo_keyboard_mapping;
-    unsigned int m_page_size;
 };
 
 Config::Config ()
@@ -108,12 +107,6 @@ Config::bopomofoKeyboardMapping (void) const
     return m_impl->m_bopomofo_keyboard_mapping;
 }
 
-unsigned int
-Config::pageSize (void) const
-{
-    return m_impl->m_page_size;
-}
-
 void
 Config::setOption (unsigned int value)
 {
@@ -145,17 +138,10 @@ Config::setBopomofoKeyboardMapping (unsigned int value)
 }
 
 void
-Config::setPageSize (unsigned int value)
-{
-    m_impl->m_page_size = value;
-}
-
-void
 Config::readDefaultValues ()
 {
     m_impl->m_option = PINYIN_DEFAULT_OPTION;
     m_impl->m_option_mask = PINYIN_INCOMPLETE_PINYIN | PINYIN_CORRECT_ALL;
-    m_impl->m_page_size = 5;
     m_impl->m_double_pinyin_schema = 0;
     m_impl->m_mode_simp = TRUE;
     m_impl->m_special_phrases = TRUE;

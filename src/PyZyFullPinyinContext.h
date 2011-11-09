@@ -32,30 +32,25 @@ class FullPinyinContext : public PinyinContext {
 
 public:
     FullPinyinContext (Config & config, PhoneticContext::Observer *observer);
-    ~FullPinyinContext (void);
+    virtual ~FullPinyinContext (void);
 
 public:
-#if 0
-    virtual bool processKeyEvent (unsigned short key_event);
-#endif
-    virtual void reset (void);
+    virtual bool insert (char ch);
+
+    virtual bool removeCharBefore (void);
+    virtual bool removeCharAfter (void);
+    virtual bool removeWordBefore (void);
+    virtual bool removeWordAfter (void);
+
+    virtual bool moveCursorLeft (void);
+    virtual bool moveCursorRight (void);
+    virtual bool moveCursorLeftByWord (void);
+    virtual bool moveCursorRightByWord (void);
+    virtual bool moveCursorToBegin (void);
+    virtual bool moveCursorToEnd (void);
 
 protected:
-    gboolean insert (gint ch);
-
-    gboolean removeCharBefore (void);
-    gboolean removeCharAfter (void);
-    gboolean removeWordBefore (void);
-    gboolean removeWordAfter (void);
-
-    gboolean moveCursorLeft (void);
-    gboolean moveCursorRight (void);
-    gboolean moveCursorLeftByWord (void);
-    gboolean moveCursorRightByWord (void);
-    gboolean moveCursorToBegin (void);
-    gboolean moveCursorToEnd (void);
-
-    void updatePinyin (void);
+    virtual void updatePinyin (void);
 
 };
 

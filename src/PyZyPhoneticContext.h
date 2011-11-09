@@ -50,41 +50,38 @@ public:
     PhoneticContext (Config & config, PhoneticContext::Observer *observer);
     virtual ~PhoneticContext (void);
 
-    virtual bool processKeyEvent (unsigned short key_event);
-
-    virtual void update (void);
-    virtual void commit (void) = 0;
+    /* API of InputContext */
     virtual void reset (void);
+    
+    bool selectCandidate (unsigned int i);
+    bool focusCandidate (unsigned int i);
+    bool focusCandidatePrevious ();
+    bool focusCandidateNext ();
+    bool resetCandidate (unsigned int i);
+    bool unselectCandidates ();
 
     /* inline functions */
+    virtual void bopomofoSelectMode () { }
+
+    /* Accessors of InputContext. */
+    virtual std::string inputText () const { return m_text; }
     virtual std::string selectedText (void) const { return m_preedit_text.selected_text; }
     virtual std::string conversionText (void) const { return m_preedit_text.candidate_text; }
     virtual std::string restText (void) const { return m_preedit_text.rest_text; }
     virtual std::string auxiliaryText (void) const { return m_auxiliary_text; }
     virtual std::vector<Candidate> candidates () const { return m_candidates; }
-    virtual std::string inputText () const { return m_text; }
-    unsigned int cursor () const { return m_cursor; }
-    unsigned int focusedCandidate () const { return m_focused_candidate; }
-    unsigned int page () const { return m_focused_candidate / m_config.pageSize (); }
+    virtual unsigned int cursor () const { return m_cursor; }
+    virtual unsigned int focusedCandidate () const { return m_focused_candidate; }
 
 protected:
-
+    virtual void resetContext (void);
+    virtual void update (void);
     virtual void commitText (const std::string & commit_text);
     virtual void updateLookupTable (void);
     virtual void updateAuxiliaryText (void);
     virtual void updatePreeditText (void);
 
-    virtual gboolean updateSpecialPhrases (void);
-    gboolean selectCandidate (guint i);
-    gboolean selectCandidateInPage (guint i);
-    gboolean resetCandidate (guint i);
-    gboolean resetCandidateInPage (guint i);
-    gboolean focusCandidate (guint i);
-    gboolean focusCandidateInPage (guint i);
-    gboolean focusCandidatePrevious ();
-    gboolean focusCandidateNext ();
-
-    virtual void selectPage (guint i);
+    virtual bool updateSpecialPhrases (void);
 
     /* inline functions */
     void updatePhraseEditor (void)
@@ -110,20 +107,6 @@ protected:
     {
         return (const gchar *)m_text + m_cursor;
     }
-
-
-    /* pure virtual functions */
-    virtual gboolean insert (gint ch) = 0;
-    virtual gboolean removeCharBefore (void) = 0;
-    virtual gboolean removeCharAfter (void) = 0;
-    virtual gboolean removeWordBefore (void) = 0;
-    virtual gboolean removeWordAfter (void) = 0;
-    virtual gboolean moveCursorLeft (void) = 0;
-    virtual gboolean moveCursorRight (void) = 0;
-    virtual gboolean moveCursorLeftByWord (void) = 0;
-    virtual gboolean moveCursorRightByWord (void) = 0;
-    virtual gboolean moveCursorToBegin (void) = 0;
-    virtual gboolean moveCursorToEnd (void) = 0;
 
     /* variables */
     Config                     &m_config;

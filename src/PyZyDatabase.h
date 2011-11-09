@@ -63,7 +63,6 @@ protected:
     Database (const std::string & user_data_dir);
 
 public:
-    static void init (void);
     static void init (const std::string & data_dir);
 
     SQLStmtPtr query (const PinyinArray   & pinyin,

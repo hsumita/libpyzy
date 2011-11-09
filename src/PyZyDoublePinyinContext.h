@@ -32,27 +32,24 @@ class DoublePinyinContext : public PinyinContext {
 
 public:
     DoublePinyinContext (Config & config, PhoneticContext::Observer *observer);
+    virtual ~DoublePinyinContext ();
 
-    gboolean insert (gint ch);
+    virtual bool insert (char ch);
 
-    gboolean removeCharBefore (void);
-    gboolean removeCharAfter (void);
-    gboolean removeWordBefore (void);
-    gboolean removeWordAfter (void);
+    virtual bool removeCharBefore (void);
+    virtual bool removeCharAfter (void);
+    virtual bool removeWordBefore (void);
+    virtual bool removeWordAfter (void);
 
-    gboolean moveCursorLeft (void);
-    gboolean moveCursorRight (void);
-    gboolean moveCursorLeftByWord (void);
-    gboolean moveCursorRightByWord (void);
-    gboolean moveCursorToBegin (void);
-    gboolean moveCursorToEnd (void);
-
-    /* override virtual functions */
-    bool processKeyEvent (unsigned short key_event);
-    void reset (void);
+    virtual bool moveCursorLeft (void);
+    virtual bool moveCursorRight (void);
+    virtual bool moveCursorLeftByWord (void);
+    virtual bool moveCursorRightByWord (void);
+    virtual bool moveCursorToBegin (void);
+    virtual bool moveCursorToEnd (void);
 
 protected:
-    gboolean updatePinyin (gboolean all);
+    virtual bool updatePinyin (bool all);
 
 private:
     const Pinyin *isPinyin (gint i, gint j);

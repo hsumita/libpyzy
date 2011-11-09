@@ -34,33 +34,34 @@ PinyinContext::~PinyinContext ()
 }
 
 void
-PinyinContext::reset (void)
-{
-  PhoneticContext::reset ();
-}
-
-void
-PinyinContext::commit ()
+PinyinContext::commit (CommitType type)
 {
     if (G_UNLIKELY (m_buffer.empty ()))
         return;
 
     m_buffer.clear ();
-    m_buffer << m_phrase_editor.selectedString ();
 
-    const gchar *p;
+    if (G_LIKELY(type == TYPE_CONVERTED)) {
+        m_buffer << m_phrase_editor.selectedString ();
 
-    if (m_selected_special_phrase.empty ()) {
-        p = textAfterPinyin (m_buffer.utf8Length ());
+        const gchar *p;
+
+        if (m_selected_special_phrase.empty ()) {
+            p = textAfterPinyin (m_buffer.utf8Length ());
+        }
+        else {
+            m_buffer << m_selected_special_phrase;
+            p = textAfterCursor ();
+        }
+        m_buffer << p;
+
+        m_phrase_editor.commit ();
+    } else {
+        m_buffer = m_text;
+        m_phrase_editor.reset ();
     }
-    else {
-        m_buffer << m_selected_special_phrase;
-        p = textAfterCursor ();
-    }
-    m_buffer << p;
 
-    m_phrase_editor.commit ();
-    reset ();
+    resetContext ();
     update ();
     PhoneticContext::commitText (m_buffer);
 }
